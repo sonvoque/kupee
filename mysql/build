@@ -1,0 +1,1 @@
+g++ -o mysql $(mysql_config --cflags) mysql.cpp $(mysql_config --libs)
