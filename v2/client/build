@@ -1,0 +1,1 @@
+gcc -o cli sls_cli.c
