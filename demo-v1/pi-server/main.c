@@ -2,7 +2,7 @@
 Shell cmd for controlling the SLS
 author Vo Que Son <sonvq@hcmut.edu.vn>
 */
-#include <mysql.h> 
+//#include <mysql.h> 
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -33,6 +33,11 @@ static  char    str_port[5];
 static  char    cmd[20];
 static  char    arg[32];
 
+
+static  char    dst_ipv6addr_list[6][50] = {"aaaa::212:4b00:5af:8406",
+"aaaa::212:4b00:5af:8570","aaaa::212:4b00:5af:83f8","aaaa::212:4b00:5af:851f",
+"aaaa::212:4b00:5af:8422","aaaa::212:4b00:5af:84dd"};
+
 static  cmd_struct_t  tx_cmd, rx_reply;
 static  cmd_struct_t *cmdPtr;
 static  char *p;
@@ -45,7 +50,7 @@ static  char *pi_p;
 /*prototype definition */
 static void print_cmd();
 static void prepare_cmd();
-
+static	uint8_t node_id;
 
 /*------------------------------------------------*/
 void prepare_cmd() {
@@ -61,7 +66,7 @@ void prepare_cmd() {
 void print_cmd(cmd_struct_t command) {
   int i;
   printf("SFD=0x%X; \n",command.sfd);
-  printf("len=%d \n",command.len);
+  printf("node_id=%d \n",command.len);
   printf("seq=%d\n ",command.seq);
   printf("type=0x%X \n ",command.type);
   printf("cmd=0x%X \n ",command.cmd);
@@ -124,6 +129,7 @@ int main(int argc, char* argv[]) {
 	unsigned char pi_buf[BUFSIZE];	/* receive buffer */
 
 
+
 	/* create a UDP socket */
 
 	if ((pi_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
@@ -152,6 +158,8 @@ for (;;) {
   		pi_cmdPtr = (cmd_struct_t *)pi_p;
   		pi_rx_reply = *pi_cmdPtr;
 		
+			node_id = (*pi_cmdPtr).len;
+
       // gui command toi node
       ip6_send_cmd(
           &pi_rx_reply, // lenh gui di
@@ -204,8 +212,9 @@ int sock;
 
   sprintf(buffer,"led_off");
   port = 3000;
-  sprintf(dst_ipv6addr,"aaaa::212:4b00:5af:84dd");
- strcpy(str_port,"3000");
+  //sprintf(dst_ipv6addr,"aaaa::212:4b00:5af:84dd");
+  strcpy(dst_ipv6addr,dst_ipv6addr_list[node_id]);
+ 	strcpy(str_port,"3000");
   
   prepare_cmd();
   strtok(buffer, "\n");
