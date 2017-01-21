@@ -34,9 +34,12 @@ static  char    cmd[20];
 static  char    arg[32];
 
 
-static  char    dst_ipv6addr_list[6][50] = {"aaaa::212:4b00:5af:8406",
-"aaaa::212:4b00:5af:8570","aaaa::212:4b00:5af:83f8","aaaa::212:4b00:5af:851f",
-"aaaa::212:4b00:5af:8422","aaaa::212:4b00:5af:84dd"};
+static  char    dst_ipv6addr_list[10][50] = {"aaaa::212:4b00:5af:8406",
+																						"aaaa::212:4b00:5af:8570",
+																						"aaaa::212:4b00:5af:83f8",
+																						"aaaa::212:4b00:5af:851f",
+																						"aaaa::212:4b00:5af:8422",
+																						"aaaa::212:4b00:5af:84dd"};
 
 static  cmd_struct_t  tx_cmd, rx_reply;
 static  cmd_struct_t *cmdPtr;
@@ -158,7 +161,7 @@ for (;;) {
   		pi_cmdPtr = (cmd_struct_t *)pi_p;
   		pi_rx_reply = *pi_cmdPtr;
 		
-			node_id = (*pi_cmdPtr).len;
+			node_id = pi_cmdPtr->len;
 
       // gui command toi node
       ip6_send_cmd(

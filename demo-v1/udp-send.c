@@ -30,13 +30,14 @@ static  char    server[50];
 static  char    str_port[5];
 static  char    cmd[20];
 static  char    arg[32];
+static uint8_t node_id;
 
 static  cmd_struct_t  tx_cmd, rx_reply;
 static  cmd_struct_t *cmdPtr;
 static  char *p;
 void init_cmd() {
   tx_cmd.sfd = SFD;
-  tx_cmd.len = sizeof(tx_cmd);
+  tx_cmd.len = node_id;
   tx_cmd.seq ++;
   //#ifdef _TEST_
 	//tx_cmd.cmd = CMD_LED_OFF	;
@@ -51,7 +52,7 @@ void init_cmd() {
 void print_cmd(cmd_struct_t command) {
   int i;
   printf("SFD=0x%X; ",command.sfd);
-  printf("len=%d; ",command.len);
+  printf("node_id=%d; ",command.len);
   printf("seq=%d; ",command.seq);
   printf("type=0x%X; ",command.type);
   printf("cmd=0x%X; ",command.cmd);
@@ -98,16 +99,19 @@ int main(int argc, char* argv[])
 	char buf[BUFLEN];	/* message buffer */
 	int recvlen;		/* # bytes in acknowledgement message */
 	//
-if(argc < 4) {
+if(argc < 5) {
     printf("Specify an IPv6 addr or port number or Cmd \n"), exit(1);
 	}
-	else if (argc==4) {
+	else if (argc==5) {
 		sprintf(server,"%s",argv[1]);      
 		strcpy(str_port,argv[2]);
-		strcpy(cmd,argv[3]);  
+		node_id = (uint8_t)atoi(argv[3]);
+
+		strcpy(cmd,argv[4]);  
 		port = atoi(str_port);
 		sprintf(buffer,"%s",cmd);
 
+		tx_cmd.len = node_id;
 		/* REQ-TYPE*/
 		if (strcmp(cmd,SLS_LED_ON)==0) {
 		  tx_cmd.cmd = CMD_LED_ON;
@@ -151,15 +155,17 @@ if(argc < 4) {
 
 
   /* cmd with arg */
-	else if (argc==5) 
-	{
+	else if (argc==6)	{
 
 	    sprintf(server,"%s",argv[1]); 
-
 	    strcpy(str_port,argv[2]);
-	    sprintf(cmd,"%s",argv[3]);
-	    sprintf(arg,"%s",argv[4]);
+			node_id = (uint8_t)atoi(argv[3]);
+
+	    sprintf(cmd,"%s",argv[4]);
+	    sprintf(arg,"%s",argv[5]);
 			//sprintf(buffer,argv[2]);
+
+			tx_cmd.len = node_id;
 
 	    if (strcmp(cmd,SLS_LED_DIM)==0) {
 	      tx_cmd.cmd = CMD_LED_DIM;    
