@@ -16,7 +16,10 @@
 #include <sys/socket.h>
 #include "port.h"
 #include "sls.h"
-#include "sls_cli.h"        
+#include "sls_cli.h"      
+#include <time.h>
+#include <sys/time.h>
+  
 #define MAXBUF  sizeof(cmd_struct_t)
 #define BUFLEN 2048
 #define MSGS 1	/* number of messages to send */
@@ -35,6 +38,14 @@ static uint8_t node_id;
 static  cmd_struct_t  tx_cmd, rx_reply;
 static  cmd_struct_t *cmdPtr;
 static  char *p;
+
+
+time_t rawtime;
+struct tm * timeinfo;
+struct timeval t0;
+struct timeval t1;
+float elapsed;
+
 void init_cmd() {
   tx_cmd.sfd = SFD;
   tx_cmd.len = node_id;
@@ -46,6 +57,7 @@ void init_cmd() {
 	//#endif
   tx_cmd.err_code = 0;  
 }
+
 
 
 /*------------------------------------------------*/
@@ -87,6 +99,12 @@ int convert(const char *hex_str, unsigned char *byte_array, int byte_array_max) 
     }
     return byte_array_size;
 }
+
+
+float timedifference_msec(struct timeval t0, struct timeval t1){
+    return (t1.tv_sec - t0.tv_sec) * 1000.0f + (t1.tv_usec - t0.tv_usec) / 1000.0f;
+}
+
 int main(int argc, char* argv[])
 {
 	//char *server="192.168.1.11";
@@ -228,9 +246,13 @@ if(argc < 5) {
 
 	/* now let's send the messages */
 
+	time ( &rawtime );
+  timeinfo = localtime ( &rawtime );
+	gettimeofday(&t0, 0);
+
 	for (i=0; i < MSGS; i++) {
 		//printf("Tx-CMD\n");
-		printf("Sending numbytes= %d\n ", sizeof(tx_cmd));
+		printf("Sending numbytes= %d @%s \n", sizeof(tx_cmd), asctime (timeinfo) );
 		print_cmd(tx_cmd);		
 		printf("...\n");
 		printf(".....\n");
@@ -247,8 +269,15 @@ if(argc < 5) {
 
 		/* now receive an acknowledgement from the server */
 		rev_bytes = recvfrom(fd, rev_buffer,MAXBUF, 0, (struct sockaddr *)&remaddr, &slen);
-                if (recvlen >= 0) {
-                    printf("Got REPLY (%d bytes):\n",rev_bytes);
+       if (recvlen >= 0) {
+						time ( &rawtime );
+  					timeinfo = localtime ( &rawtime );
+						gettimeofday(&t1, 0);
+
+   					elapsed = timedifference_msec(t0, t1);
+   					printf("Cmd execution delay %f milliseconds.\n", elapsed);
+            
+						printf("Got REPLY (%d bytes): @%s \n",rev_bytes,asctime (timeinfo) );
 				    p = (char *) (&rev_buffer);
 				    cmdPtr = (cmd_struct_t *)p;
 				    rx_reply = *cmdPtr;

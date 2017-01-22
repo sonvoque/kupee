@@ -12,9 +12,13 @@ author Vo Que Son <sonvq@hcmut.edu.vn>
 #include <stdlib.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <sys/time.h>
+
 
 #include "sls.h"
 #include "sls_cli.h"
+
+
 #define BUFSIZE 2048
 #define MAXBUF  sizeof(cmd_struct_t)
 #define SERVICE_PORT	21234	/* hard-coded port number */
@@ -54,6 +58,11 @@ static  char *pi_p;
 static void print_cmd();
 static void prepare_cmd();
 static	uint8_t node_id;
+
+struct timeval t0;
+struct timeval t1;
+float elapsed;
+
 
 /*------------------------------------------------*/
 void prepare_cmd() {
@@ -116,6 +125,11 @@ void ip6_send_cmd(
           char * ip6_addr
           );
 
+float timedifference_msec(struct timeval t0, struct timeval t1){
+    return (t1.tv_sec - t0.tv_sec) * 1000.0f + (t1.tv_usec - t0.tv_usec) / 1000.0f;
+}
+
+
 int main(int argc, char* argv[]) {
  
 
@@ -163,6 +177,7 @@ for (;;) {
 		
 			node_id = pi_cmdPtr->len;
 
+			gettimeofday(&t0, 0);
       // gui command toi node
       ip6_send_cmd(
           &pi_rx_reply, // lenh gui di
@@ -170,6 +185,9 @@ for (;;) {
           3000, 
           dst_ipv6addr
           );
+			gettimeofday(&t1, 0);
+   		elapsed = timedifference_msec(t0, t1);
+   		printf("GW-Cmd execution delay %f milliseconds.\n", elapsed);
 
 		}
 		else
