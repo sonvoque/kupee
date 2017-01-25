@@ -1,13 +1,16 @@
 /*
-        demo-udp-03: udp-send: a simple udp client
-	send udp messages
-	This sends a sequence of messages (the # of messages is defined in MSGS)
-	The messages are sent to a port defined in SERVICE_PORT 
-
-        usage:  udp-send
-
-        Paul Krzyzanowski
+|-------------------------------------------------------------------|
+| HCMC University of Technology");                                  |
+| Telecommunications Departments                                    |
+| Wireless Embedded Firmware for Smart Lighting System (SLS)        |
+| Version: 1.0                                                      |
+| Author: sonvq@hcmut.edu.vn                                        |
+| Date: 01/2017                                                     |
+|-------------------------------------------------------------------|*/
+/* Description:
+- Running on Gateway platform
 */
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -192,7 +195,7 @@ if(argc < 5) {
 	      tx_cmd.type = MSG_TYPE_HELLO;
 	      strcpy(str_app_key,arg);
 	      convert(str_app_key, byte_array, MAX_CMD_DATA_LEN);
-	      for (int i = 0; i<MAX_CMD_DATA_LEN; i++) {
+	      for (i = 0; i<MAX_CMD_DATA_LEN; i++) {
 	        tx_cmd.arg[i] = byte_array[i];
 	      }
 	    }
