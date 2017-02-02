@@ -1,8 +1,8 @@
 /*
 |-------------------------------------------------------------------|
-| HCMC University of Technology");                                  |
+| HCMC University of Technology                                     |
 | Telecommunications Departments                                    |
-| Wireless Embedded Firmware for Smart Lighting System (SLS)        |
+| Gateway Service for Smart Lighting System (SLS)                   |
 | Version: 1.0                                                      |
 | Author: sonvq@hcmut.edu.vn                                        |
 | Date: 01/2017                                                     |
@@ -35,7 +35,7 @@ static  char    server[50];
 static  char    str_port[5];
 static  char    cmd[20];
 static  char    arg[32];
-static uint8_t node_id;
+static 	uint8_t node_id;
 
 static  cmd_struct_t  tx_cmd, rx_reply;
 static  cmd_struct_t *cmdPtr;
@@ -47,8 +47,11 @@ struct timeval t1;
 float elapsed;
 
 void init_cmd() {
+
+//printf("NODE_ID = %d \n",tx_cmd.len);
+
   tx_cmd.sfd = SFD;
-  tx_cmd.len = node_id;
+  //tx_cmd.len = 1;
   tx_cmd.seq ++;
   //#ifdef _TEST_
 	//tx_cmd.cmd = CMD_LED_OFF	;
@@ -117,8 +120,8 @@ int main(int argc, char* argv[])
 	char buf[BUFLEN];	/* message buffer */
 	int recvlen;		/* # bytes in acknowledgement message */
 	//
-if(argc < 5) {
-    printf("Specify an IPv6 addr or port number or Cmd \n"), exit(1);
+	if(argc < 5) {
+    	printf("Specify an IPv6 addr or port number or Cmd \n"), exit(1);
 	}
 	else if (argc==5) {
 		sprintf(server,"%s",argv[1]);      
@@ -171,19 +174,18 @@ if(argc < 5) {
 		}  
 	}		
 
-
   /* cmd with arg */
 	else if (argc==6)	{
-
 	    sprintf(server,"%s",argv[1]); 
 	    strcpy(str_port,argv[2]);
-			node_id = (uint8_t)atoi(argv[3]);
+		node_id = (uint8_t)atoi(argv[3]);
+		tx_cmd.len = node_id;
+	    
 
 	    sprintf(cmd,"%s",argv[4]);
 	    sprintf(arg,"%s",argv[5]);
-			//sprintf(buffer,argv[2]);
 
-			tx_cmd.len = node_id;
+		//sprintf(buffer,argv[2]);
 
 	    if (strcmp(cmd,SLS_LED_DIM)==0) {
 	      tx_cmd.cmd = CMD_LED_DIM;    
