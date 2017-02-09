@@ -169,7 +169,6 @@ for (;;) {
 		printf("waiting on port %d\n", SERVICE_PORT);
 		pi_recvlen = recvfrom(pi_fd, pi_buf, BUFSIZE, 0, (struct sockaddr *)&pi_remaddr, &pi_addrlen);
 		if (pi_recvlen > 0) {
-			
 			printf("received %d bytes\n", pi_recvlen);
   		pi_p = (char *) (&pi_buf); 
   		pi_cmdPtr = (cmd_struct_t *)pi_p;
@@ -178,17 +177,24 @@ for (;;) {
 			node_id = pi_cmdPtr->len;
 
 			gettimeofday(&t0, 0);
-      // gui command toi node
-      ip6_send_cmd(
+      if (pi_cmdPtr->cmd==CMD_GW_HELLO) {
+
+      }
+      else if (pi_cmdPtr->cmd==CMD_GET_GW_STATUS) {
+
+      }
+      else {
+        // gui command toi node
+        ip6_send_cmd(
           &pi_rx_reply, // lenh gui di
           &rx_reply, // 
           3000, 
           dst_ipv6addr
           );
-			gettimeofday(&t1, 0);
-   		elapsed = timedifference_msec(t0, t1);
-   		printf("GW-Cmd execution delay %f milliseconds.\n", elapsed);
-
+			 gettimeofday(&t1, 0);
+   		 elapsed = timedifference_msec(t0, t1);
+   		 printf("GW-Cmd execution delay %f milliseconds.\n", elapsed);
+      }
 		}
 		else
 			printf("uh oh - something went wrong!\n");

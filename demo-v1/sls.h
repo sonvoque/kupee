@@ -1,12 +1,59 @@
+/*
+|-------------------------------------------------------------------|
+| HCMC University of Technology                                     |
+| Telecommunications Departments                                    |
+| Wireless Embedded Firmware for Smart Lighting System (SLS)        |
+| Version: 1.0                                                      |
+| Author: sonvq@hcmut.edu.vn                                        |
+| Date: 01/2017                                                     |
+|-------------------------------------------------------------------|
+*/
+
+#ifndef SLS_H_
+#define SLS_H_
+
+//#define IEEE802154_CONF_PANID		0xCAFE
+#define SLS_PAN_ID	 IEEE802154_CONF_PANID
 
 
-#ifndef SLS_
-#define SLS_
+enum {
+	SLS_NORMAL_PORT			= 3000,
+	SLS_EMERGENCY_PORT		= 3001,
+};
 
-#define	SFD 				0x7F
+/*---------------------------------------------------------------------------*/
+/* This is the UDP port used to receive data */
+/* Response will be echoed back to DST port */
+#define UDP_SERVER_LISTEN_PORT   	SLS_NORMAL_PORT
+#define UDP_CLIENT_SEND_PORT   		SLS_EMERGENCY_PORT
+
+
+/*
+SLS_CC2538DK_HW = 1 : for compiling to CC2538dk
+SLS_CC2538DK_HW = 0 : for compiling to SKY used in Cooja simulation
+*/
+#define SLS_CC2538DK_HW		1
+
+
+#if (SLS_CC2538DK_HW)
+#define SLS_USING_CC2538DK
+#else
+#define SLS_USING_SKY
+#endif
+
+#define	SFD 	0x7F
+
+//redefine led
+#define BLUE		LEDS_ORANGE
+#define RED			LEDS_GREEN
+#define GREEN		LEDS_BLUE
+
 
 #define MAX_CMD_DATA_LEN	16
 #define MAX_CMD_LEN	sizeof(cmd_struct_t)
+
+typedef enum {false=0, true=1} bool;
+#define DEFAULT_EMERGENCY_STATUS true
 
 enum {	
 	// msg type
@@ -31,6 +78,8 @@ enum {
 	CMD_GET_APP_KEY			= 0x0A,
 	CMD_LED_HELLO 			= 0x0B,
 	CMD_LED_REBOOT			= 0x0C,
+	CMD_REPAIR_ROUTE		= 0x0D,
+	CMD_GW_HELLO			= 0x0E,
 };
 
 enum {
@@ -65,6 +114,8 @@ enum {
 	ERR_NORMAL				= 0x00,
 	ERR_UNKNOWN_CMD			= 0x01,
 	ERR_IN_HELLO_STATE		= 0x02,
+	ERR_TIME_OUT			= 0x03,
+	ERR_EMERGENCY			= 0x04,	
 };
 
 enum {
@@ -74,10 +125,11 @@ enum {
 	STATE_EMERGENCY			= 0x02,
 };
 
+
 /*---------------------------------------------------------------------------*/
 struct led_struct_t {
-	uint16_t	id;
-	uint16_t  	panid;
+	uint16_t	id;			/*000xxxxx xxxxxxxx */
+	uint16_t  	panid;		/* default = 0xABCD */ 
 	uint16_t	voltage;
 	uint16_t	current;
 	uint16_t	power;
@@ -85,13 +137,12 @@ struct led_struct_t {
 	uint16_t	lux;
 	uint8_t		dim;	
 	uint8_t		status;
-	//uint8_t		timestamp[4];
 };
 
 /*---------------------------------------------------------------------------*/
 //	used by gateway
 struct gw_struct_t {
-	uint16_t	id;
+	uint16_t	id;			/*001xxxxx xxxxxxxx */
 	uint16_t	panid;		
 	uint16_t	voltage;
 	uint16_t	current;
@@ -99,13 +150,12 @@ struct gw_struct_t {
 	uint16_t	temperature;
 	uint16_t	lux;
 	uint8_t		status;
-	//uint8_t		timestamp[4];
 };
 
 /*---------------------------------------------------------------------------*/
 //	used in the future
 struct env_struct_t {
-	uint16_t	id;
+	uint16_t	id;			/*010xxxxx xxxxxxxx */
 	uint16_t	panid;		
 	uint16_t	temp;
 	uint16_t	humidity;
@@ -113,7 +163,6 @@ struct env_struct_t {
 	uint16_t	pir;
 	uint16_t	rain;
 	uint8_t		status;
-	//uint8_t		timestamp[4];
 };
 
 /* This data structure is used to store the packet content (payload) */
@@ -124,18 +173,17 @@ struct net_struct_t {
 	int8_t			tx_power;
 	uint16_t		panid;
 	uint16_t		node_addr;
-	unsigned char	app_code[18];
+	unsigned char	app_code[16];
 };
 
 /*---------------------------------------------------------------------------*/
-//	sfd = 0x7E
+//	sfd = 0x7F
 //	seq: transaction id;
-//	type: 	0 = REQUEST
-//			1 = REPLY
-//	len: 6
+//	type: 	REQUEST/REPLY/HELLO
+//	len: 	used for App node_id
 //	cmd:	command id
-//	arg1-4: arguments
 //	err_code: code returned in REPLY, sender check this field to know the REQ status
+//	arg[16]: data payload
 struct cmd_struct_t {
 	uint8_t  	sfd;
 	uint8_t 	len;
@@ -146,10 +194,12 @@ struct cmd_struct_t {
 	uint8_t 	arg[MAX_CMD_DATA_LEN];
 };
 
+
 typedef struct cmd_struct_t		cmd_struct_t;
 typedef struct net_struct_t		net_struct_t;
 typedef struct gw_struct_t		gw_struct_t;
 typedef struct led_struct_t		led_struct_t;
 
-/*---------------------------------------------------------------------------*/
-#endif
+
+
+#endif /* SLS_H_ */
