@@ -39,11 +39,11 @@ static  char    arg[32];
 
 
 static  char    dst_ipv6addr_list[10][50] = {"aaaa::212:4b00:5af:8406",
-																						"aaaa::212:4b00:5af:8570",
-																						"aaaa::212:4b00:5af:83f8",
-																						"aaaa::212:4b00:5af:851f",
-																						"aaaa::212:4b00:5af:8422",
-																						"aaaa::212:4b00:5af:84dd"};
+																						 "aaaa::212:4b00:5af:8570",
+																						 "aaaa::212:4b00:5af:83f8",
+																						 "aaaa::212:4b00:5af:851f",
+																						 "aaaa::212:4b00:5af:8422",
+																						 "aaaa::212:4b00:5af:84dd"};
 
 static  cmd_struct_t  tx_cmd, rx_reply;
 static  cmd_struct_t *cmdPtr;
@@ -178,10 +178,10 @@ for (;;) {
 
 			gettimeofday(&t0, 0);
       if (pi_cmdPtr->cmd==CMD_GW_HELLO) {
-
+        printf("received CMD_GW_HELLO, cmd=%d \n", pi_cmdPtr->cmd);
       }
       else if (pi_cmdPtr->cmd==CMD_GET_GW_STATUS) {
-
+        printf("received CMD_GET_GW_STATUS, cmd=%d \n", pi_cmdPtr->cmd);
       }
       else {
         // gui command toi node
