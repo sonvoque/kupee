@@ -179,9 +179,11 @@ for (;;) {
 			gettimeofday(&t0, 0);
       if (pi_cmdPtr->cmd==CMD_GW_HELLO) {
         printf("received CMD_GW_HELLO, cmd=%d \n", pi_cmdPtr->cmd);
+        rx_reply.type = MSG_TYPE_REP;
       }
       else if (pi_cmdPtr->cmd==CMD_GET_GW_STATUS) {
         printf("received CMD_GET_GW_STATUS, cmd=%d \n", pi_cmdPtr->cmd);
+        rx_reply.type = MSG_TYPE_REP;
       }
       else {
         // gui command toi node
