@@ -49,7 +49,7 @@ SLS_CC2538DK_HW = 0 : for compiling to SKY used in Cooja simulation
 #define GREEN		LEDS_BLUE
 
 
-#define MAX_CMD_DATA_LEN	24
+#define MAX_CMD_DATA_LEN	20
 #define MAX_CMD_LEN	sizeof(cmd_struct_t)
 
 typedef enum {false=0, true=1} bool;
