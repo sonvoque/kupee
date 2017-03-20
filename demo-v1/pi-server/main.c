@@ -36,6 +36,8 @@ static  char    arg[32];
 
 static  char    dst_ipv6addr_list[10][50] = {"aaaa::212:4b00:5af:8406",
 											"aaaa::212:4b00:5af:8570",
+                                            "aaaa::212:4b00:5a9:8f83",
+                                            "aaaa::212:4b00:5a9:8fd5"                                              
 											"aaaa::212:4b00:5af:83f8",
 											"aaaa::212:4b00:5af:851f",
 											"aaaa::212:4b00:5af:8422",
@@ -140,7 +142,6 @@ int main(int argc, char* argv[]) {
 	}
 
 	/* bind the socket to any valid IP address and a specific port */
-
 	memset((char *)&pi_myaddr, 0, sizeof(pi_myaddr));
 	pi_myaddr.sin_family = AF_INET;
 	pi_myaddr.sin_addr.s_addr = htonl(INADDR_ANY);
