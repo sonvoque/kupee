@@ -34,7 +34,7 @@ static  char    cmd[20];
 static  char    arg[32];
 
 
-static  char    dst_ipv6addr_list[10][50] = {"aaaa::212:4b00:5af:8406",
+static  char    dst_ipv6addr_list[10][50] ={"aaaa::212:4b00:5af:8406",
 											"aaaa::212:4b00:5af:8570",
                                             "aaaa::212:4b00:5a9:8f83",
                                             "aaaa::212:4b00:5a9:8fd5"                                              
@@ -42,7 +42,10 @@ static  char    dst_ipv6addr_list[10][50] = {"aaaa::212:4b00:5af:8406",
 											"aaaa::212:4b00:5af:851f",
 											"aaaa::212:4b00:5af:8422",
 											"aaaa::212:4b00:5af:84dd",
-                                            "aaaa::212:7408:8:808",         //for cooja testing                                     
+                                            "aaaa::212:4b00:5a9:8ff2",
+                                            "aaaa::212:4b00:5a9:8f91", 
+
+                                            "aaaa::212:7402:2:202",         //for cooja testing                                     
                                                                     };
 
 static  cmd_struct_t  tx_cmd, rx_reply;
